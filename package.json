@@ -1,0 +1,26 @@
+{
+  "name": "dorx-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DORX — brand catalogue site with an admin panel",
+  "type": "commonjs",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --env-file-if-exists=.env server/index.js",
+    "mcp": "node mcp/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "cookie-parser": "^1.4.7",
+    "express": "^5.2.1",
+    "multer": "^2.3.0",
+    "zod": "^4.6.2"
+  },
+  "overrides": {
+    "qs": "^6.15.4"
+  }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Конфиденциальность — DORX</title>
+<meta name="description" content="Как сайт DORX обращается с данными: что сохраняется в браузере, что мы не собираем, куда уходит список из корзины.">
+<link rel="canonical" href="/privacy/">
+<link rel="icon" href="/assets/dorx-icon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#15171C">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rubik:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=9">
+</head>
+<body>
+
+<header id="hdr"><div class="bar">
+  <a class="wm" href="/">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="20" fill="#1E5EE0"></rect><g stroke="#fff"><g transform="translate(50,50) skewX(-10) translate(-50,-50)" stroke-width="11.4"><line x1="35.4" y1="35.4" x2="64.6" y2="64.6"></line><line x1="64.6" y1="35.4" x2="35.4" y2="64.6"></line></g></g></svg>
+    DORX
+  </a>
+  <nav>
+    <a href="/">Главная</a>
+    <a href="/catalogue/">Каталог</a>
+    <a href="/warranty/">Гарантия</a>
+  </nav>
+</div></header>
+
+<main class="page"><div class="wrap">
+  <div class="eyebrow">Документы</div>
+  <h1 class="ph">Конфиденциальность</h1>
+  <p class="lede">Коротко: сайт не просит вас регистрироваться, не собирает анкеты и не передаёт
+    ваши данные рекламным сетям.</p>
+
+  <div class="prose">
+    <h2>Что сохраняется в вашем браузере</h2>
+    <p>Только две вещи, и обе остаются на вашем устройстве:</p>
+    <ul>
+      <li><b>Содержимое корзины</b> — список выбранных товаров и количество. Нужно, чтобы корзина
+        не терялась при перезагрузке страницы.</li>
+      <li><b>Применённый промокод</b> — если вы его вводили.</li>
+    </ul>
+    <p>Эти записи хранятся в локальном хранилище браузера. Мы их не читаем и не получаем: они
+      никуда не отправляются, пока вы сами не нажмёте «Оформить заказ». Очистка данных сайта
+      в браузере удаляет их полностью.</p>
+
+    <h2>Что происходит при оформлении заказа</h2>
+    <p>Кнопка «Оформить заказ» открывает WhatsApp с уже готовым текстом — списком товаров и суммой.
+      Ничего не отправляется автоматически: сообщение уходит только когда вы сами его отправите.
+      После этого мы видим ваш номер телефона и переписку — ровно как при любом обычном сообщении.</p>
+
+    <h2>Чего мы не делаем</h2>
+    <ul>
+      <li>Не ставим рекламные и аналитические трекеры сторонних сетей.</li>
+      <li>Не просим e-mail, адрес или платёжные данные на сайте: форма оплаты здесь
+        не стоит вовсе, и платёжных данных мы не видим.</li>
+      <li>Не продаём и не передаём контакты третьим лицам.</li>
+    </ul>
+
+    <h2>Что видит сервер</h2>
+    <p>Как любой веб-сервер, наш записывает технические сведения о запросах: IP-адрес, время,
+      адрес страницы и тип браузера. Это нужно для работы и защиты сайта. Мы не используем эти
+      записи для профилирования посетителей.</p>
+
+    <h2>Внешние сервисы</h2>
+    <p>Шрифты подгружаются с Google Fonts, поэтому при открытии страницы ваш браузер обращается
+      к серверам Google. Оформление заказа открывает WhatsApp, где действует политика
+      конфиденциальности этого сервиса.</p>
+
+    <h2>Административная часть</h2>
+    <p>Раздел управления каталогом закрыт паролем и предназначен только для владельца бренда.
+      Он не собирает и не хранит данные посетителей сайта.</p>
+
+    <h2>Вопросы</h2>
+    <p>Если хотите узнать, что о вас известно, или попросить удалить переписку — напишите
+      на <a href="#" data-phone>наш номер</a>.</p>
+  </div>
+</div></main>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap">
+  <span>© <span id="yr"></span> DORX · Республика Казахстан</span>
+  <span><a href="#" data-phone>+7 700 000 00 00</a> · <a href="/warranty/">Гарантия</a> · <a href="/terms/">Условия</a></span>
+</div></footer>
+
+<div id="dim"></div>
+<button id="closeSheet" aria-label="Закрыть">&times;</button>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Карточка товара"></div>
+
+<script src="/assets/app.js?v=9" defer></script>
+</body>
+</html>

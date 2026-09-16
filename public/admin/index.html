@@ -1,0 +1,850 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DORX — управление сайтом</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/assets/dorx-icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rubik:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#1E5EE0;--blue-dark:#1747AC;--blue-soft:#E7EEFC;--ink:#15171C;--ink-2:#2A2E38;
+  --paper:#F6F6F3;--paper-2:#ECECE7;--line:#D9D9D3;--mute:#6B7080;--white:#fff;--ok:#12864B;--bad:#C9421F;
+  --mono:"IBM Plex Mono","Space Mono",ui-monospace,monospace;--display:"Michroma","Rubik",sans-serif;
+  --body:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;--r:4px}
+*{box-sizing:border-box}
+/* hidden проигрывает классам с display, поэтому задаём явно */
+[hidden]{display:none !important}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+img{max-width:100%;display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* вход */
+#gate{min-height:100vh;display:grid;place-items:center;padding:24px}
+#gate .box{width:min(100%,380px);background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:34px}
+#gate .mark{width:46px;margin-bottom:22px}
+#gate h1{font-family:var(--display);font-size:19px;margin:0 0 6px}
+#gate p{color:var(--mute);font-size:14px;margin:0 0 22px}
+
+label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:6px}
+input[type=text],input[type=password],input[type=number],input[type=url],textarea,select{
+  width:100%;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;font:inherit;
+  background:var(--white);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--blue)}
+textarea{resize:vertical;min-height:96px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 18px;border:1px solid transparent;
+  border-radius:var(--r);font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  transition:background .16s,color .16s,border-color .16s}
+.btn-a{background:var(--blue);color:var(--white)}
+.btn-a:hover{background:var(--blue-dark)}
+.btn-b{background:transparent;border-color:var(--ink);color:var(--ink)}
+.btn-b:hover{background:var(--ink);color:var(--paper)}
+.btn-bad{background:transparent;border-color:var(--bad);color:var(--bad)}
+.btn-bad:hover{background:var(--bad);color:var(--white)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.wide{width:100%}
+
+/* каркас */
+#app{display:none;min-height:100vh;grid-template-columns:290px minmax(0,1fr)}
+#app.on{display:grid}
+@media(max-width:880px){#app.on{grid-template-columns:1fr}}
+
+aside{background:var(--ink);color:var(--paper);display:flex;flex-direction:column;min-height:100vh}
+@media(max-width:880px){aside{min-height:0}}
+aside .top{padding:20px;border-bottom:1px solid rgba(246,246,243,.12);display:flex;align-items:center;gap:10px}
+aside .top svg{width:24px;border-radius:6px}
+aside .top b{font-family:var(--display);font-size:15px}
+.tabs{display:flex;flex-direction:column;padding:12px 10px;gap:2px}
+.tab{border:0;background:transparent;color:rgba(246,246,243,.66);text-align:left;padding:11px 14px;border-radius:var(--r);
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.tab:hover{background:rgba(246,246,243,.07);color:var(--paper)}
+.tab.on{background:var(--blue);color:var(--white)}
+aside .foot{margin-top:auto;padding:16px;border-top:1px solid rgba(246,246,243,.12);display:flex;flex-direction:column;gap:8px}
+aside .foot a,aside .foot button{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+  color:rgba(246,246,243,.6);text-decoration:none;background:transparent;border:0;text-align:left;padding:4px 0}
+aside .foot a:hover,aside .foot button:hover{color:var(--paper)}
+
+main{padding:26px clamp(18px,3vw,34px) 70px;min-width:0}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.head h2{font-family:var(--display);font-size:21px;margin:0}
+.head p{color:var(--mute);font-size:14px;margin:6px 0 0;max-width:66ch}
+.pane{display:none}
+.pane.on{display:block}
+
+.panel{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:22px;margin-bottom:18px}
+.panel h3{font-family:var(--display);font-size:15px;margin:0 0 4px}
+.panel .hint{color:var(--mute);font-size:13px;margin:0 0 18px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:14px}
+.field{min-width:0}
+.field .tip{color:var(--mute);font-size:12px;margin-top:5px}
+
+/* список товаров */
+.split{display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:1000px){.split{grid-template-columns:1fr}}
+.list{background:var(--white);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;position:sticky;top:20px}
+@media(max-width:1000px){.list{position:static}}
+.list .lh{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.list .lh b{font-family:var(--mono);font-size:12px}
+.list .search{padding:10px 12px;border-bottom:1px solid var(--line)}
+.list .items{max-height:62vh;overflow-y:auto}
+.item{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);
+  cursor:pointer;align-items:center;background:transparent;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.item:hover{background:var(--paper)}
+.item.on{background:var(--blue-soft)}
+.item img{width:42px;height:42px;object-fit:cover;border-radius:3px;background:var(--paper-2)}
+.item .ph0{width:42px;height:42px;border-radius:3px;background:var(--paper-2);display:grid;place-items:center;color:var(--mute);font-size:16px}
+.item .nm{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .mt{font-family:var(--mono);font-size:11px;color:var(--mute)}
+.item .tag{display:inline-block;margin-left:6px;padding:1px 5px;border-radius:2px;background:var(--paper-2);
+  font-family:var(--mono);font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+
+/* фотографии */
+.shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-top:12px}
+.shot{position:relative;aspect-ratio:1;border:2px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--paper-2)}
+.shot.lead{border-color:var(--blue)}
+.shot img{width:100%;height:100%;object-fit:cover}
+.shot .tools{position:absolute;inset:auto 0 0 0;display:flex;background:rgba(21,23,28,.78)}
+.shot .tools button{flex:1;border:0;background:transparent;color:#fff;font-size:12px;padding:5px 0;line-height:1}
+.shot .tools button:hover{background:var(--blue)}
+.shot .flag{position:absolute;left:4px;top:4px;background:var(--blue);color:#fff;font-family:var(--mono);
+  font-size:8px;letter-spacing:.08em;padding:2px 5px;border-radius:2px;text-transform:uppercase}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:26px;text-align:center;color:var(--mute);
+  font-size:13px;margin-top:12px;transition:border-color .16s,background .16s}
+.drop.hot{border-color:var(--blue);background:var(--blue-soft)}
+.drop b{display:block;color:var(--ink);margin-bottom:4px;font-size:14px}
+.urlAdd{display:flex;gap:8px;margin-top:10px}
+.urlAdd input{flex:1;min-width:0}
+
+/* характеристики */
+.spec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) 34px;gap:8px;margin-bottom:8px}
+.spec button{border:1px solid var(--line);background:var(--white);border-radius:var(--r);color:var(--mute)}
+.spec button:hover{border-color:var(--bad);color:var(--bad)}
+
+.check{display:flex;align-items:center;gap:8px;font-size:14px}
+.check input{width:17px;height:17px;accent-color:var(--blue)}
+
+.bar2{position:sticky;bottom:0;background:var(--white);border:1px solid var(--line);border-radius:var(--r);
+  padding:14px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:18px;
+  box-shadow:0 -4px 18px rgba(21,23,28,.06)}
+.bar2 .grow{flex:1}
+
+/* акции */
+.promoList{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:16px}
+.promoCard{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--white)}
+.promoCard img{aspect-ratio:16/9;object-fit:cover;width:100%;background:var(--paper-2)}
+.promoCard .pb{padding:12px;display:flex;flex-direction:column;gap:8px}
+.promoCard input{font-size:13px;padding:8px 10px}
+
+#msg{position:fixed;left:50%;bottom:24px;transform:translate(-50%,150%);z-index:200;background:var(--ink);color:var(--paper);
+  padding:13px 20px;border-radius:var(--r);font-family:var(--mono);font-size:12px;transition:transform .28s;max-width:calc(100% - 30px)}
+#msg.on{transform:translate(-50%,0)}
+#msg.bad{background:var(--bad)}
+#msg.ok{background:var(--ok)}
+.err{color:var(--bad);font-size:13px;margin-top:10px;min-height:18px}
+.muted{color:var(--mute);font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- ================= ВХОД ================= -->
+<div id="gate">
+  <div class="box">
+    <div class="mark">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="20" fill="#1E5EE0"></rect><g stroke="#fff"><g transform="translate(50,50) skewX(-10) translate(-50,-50)" stroke-width="11.4"><line x1="35.4" y1="35.4" x2="64.6" y2="64.6"></line><line x1="64.6" y1="35.4" x2="35.4" y2="64.6"></line></g></g></svg>
+    </div>
+    <h1>Управление сайтом</h1>
+    <p>Введите пароль, чтобы редактировать каталог DORX.</p>
+    <form id="gateForm">
+      <label for="pw">Пароль</label>
+      <input id="pw" type="password" autocomplete="current-password" required>
+      <div class="err" id="gateErr"></div>
+      <button class="btn btn-a wide" type="submit" id="gateGo" style="margin-top:8px">Войти</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= ПАНЕЛЬ ================= -->
+<div id="app">
+  <aside>
+    <div class="top">
+      <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="20" fill="#1E5EE0"></rect><g stroke="#fff"><g transform="translate(50,50) skewX(-10) translate(-50,-50)" stroke-width="11.4"><line x1="35.4" y1="35.4" x2="64.6" y2="64.6"></line><line x1="64.6" y1="35.4" x2="35.4" y2="64.6"></line></g></g></svg>
+      <b>DORX</b>
+    </div>
+    <div class="tabs">
+      <button class="tab on" type="button" data-p="goods">Товары</button>
+      <button class="tab" type="button" data-p="promo">Акции</button>
+      <button class="tab" type="button" data-p="cfg">Настройки</button>
+    </div>
+    <div class="foot">
+      <a href="/" target="_blank" rel="noopener">Открыть сайт →</a>
+      <button type="button" id="logout">Выйти</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- ---------- товары ---------- -->
+    <section class="pane on" id="pane-goods">
+      <div class="head">
+        <div>
+          <h2>Товары</h2>
+          <p>Всё, что вы здесь сохраните, сразу появится на сайте. Первая фотография —
+            главная, именно её видно в каталоге.</p>
+        </div>
+        <button class="btn btn-a" type="button" id="addNew">+ Новый товар</button>
+      </div>
+
+      <div class="split">
+        <div class="list">
+          <div class="lh"><b id="listCount">Товары</b></div>
+          <div class="search"><input id="listQ" type="text" placeholder="Поиск по названию"></div>
+          <div class="items" id="items"></div>
+        </div>
+
+        <div>
+          <form id="form">
+            <div class="panel">
+              <h3>Основное</h3>
+              <p class="hint">Название и категория обязательны — по ним товар попадает в каталог.</p>
+              <div class="row">
+                <div class="field"><label for="f_name">Название</label>
+                  <input id="f_name" type="text" required placeholder="Например: Aria"></div>
+                <div class="field"><label for="f_sub">Подзаголовок</label>
+                  <input id="f_sub" type="text" placeholder="Например: Офисное кресло"></div>
+              </div>
+              <div class="row">
+                <div class="field"><label for="f_cat">Категория</label>
+                  <select id="f_cat">
+                    <option value="seating">Кресла и мебель</option>
+                    <option value="mirrors">Зеркала</option>
+                    <option value="workspace">Рабочее место</option>
+                    <option value="appliances">Техника</option>
+                    <option value="bath">Ванная</option>
+                    <option value="home">Для дома</option>
+                  </select></div>
+                <div class="field"><label for="f_war">Гарантия</label>
+                  <input id="f_war" type="text" placeholder="12 месяцев"></div>
+                <div class="field" style="align-self:end;display:flex;gap:18px;padding-bottom:10px">
+                  <span class="check"><input id="f_hit" type="checkbox"><label for="f_hit" style="margin:0;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:14px;color:var(--ink)">Хит</label></span>
+                  <span class="check"><input id="f_new" type="checkbox"><label for="f_new" style="margin:0;text-transform:none;letter-spacing:0;font-family:var(--body);font-size:14px;color:var(--ink)">Новинка</label></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>Фотографии</h3>
+              <p class="hint">Перетащите файлы сюда или выберите их. JPEG, PNG или WebP до 8 МБ.
+                Нажмите «Главная», чтобы поставить снимок первым.</p>
+              <div class="drop" id="drop">
+                <b>Перетащите фотографии сюда</b>
+                или <button class="btn btn-b" type="button" id="pick" style="margin-left:6px">Выбрать файлы</button>
+                <input id="file" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+              </div>
+              <div class="urlAdd">
+                <input id="imgUrl" type="url" placeholder="Или вставьте ссылку на изображение">
+                <button class="btn btn-b" type="button" id="imgAdd">Добавить</button>
+              </div>
+              <div class="shots" id="shots"></div>
+            </div>
+
+            <div class="panel">
+              <h3>Цена и ссылки</h3>
+              <p class="hint">Ежемесячный платёж посчитается сам, если оставить поле пустым.</p>
+              <div class="row">
+                <div class="field"><label for="f_price">Цена, ₸</label>
+                  <input id="f_price" type="number" min="0" step="10" placeholder="0"></div>
+                <div class="field"><label for="f_inst">В рассрочку, ₸/мес</label>
+                  <input id="f_inst" type="number" min="0" step="10" placeholder="считается как цена ÷ 24">
+                </div>
+              </div>
+              <div class="row">
+                <div class="field"><label for="f_yt">Ссылка на видео</label>
+                  <input id="f_yt" type="url" placeholder="https://youtube.com/..."></div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>Описание</h3>
+              <p class="hint">Два-три предложения о том, для чего товар и чем он хорош.</p>
+              <textarea id="f_desc" placeholder="Опишите товар простыми словами"></textarea>
+            </div>
+
+            <div class="panel">
+              <h3>Характеристики</h3>
+              <p class="hint">Пары «свойство — значение». Они показываются таблицей в карточке товара.</p>
+              <div id="specs"></div>
+              <button class="btn btn-b" type="button" id="specAdd">+ Добавить строку</button>
+            </div>
+
+            <div class="bar2">
+              <span class="grow muted" id="formState">Новый товар</span>
+              <button class="btn btn-bad" type="button" id="del" hidden>Удалить</button>
+              <button class="btn btn-b" type="button" id="formReset">Сбросить</button>
+              <button class="btn btn-a" type="submit" id="save">Сохранить</button>
+            </div>
+          </form>
+
+          <div class="panel" style="margin-top:18px">
+            <h3>Демонстрационные товары</h3>
+            <p class="hint">Шесть примеров, чтобы посмотреть, как выглядит наполненный сайт.
+              Они помечены и удаляются одной кнопкой. На рабочем сайте их держать не нужно.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-b" type="button" id="demoAdd">Добавить примеры</button>
+              <button class="btn btn-bad" type="button" id="demoDrop">Убрать примеры</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- акции ---------- -->
+    <section class="pane" id="pane-promo">
+      <div class="head">
+        <div>
+          <h2>Акции</h2>
+          <p>Баннеры в блоке «Что сейчас выгодно» на главной. Если ни одного нет,
+            блок просто не показывается. Здесь же задаются промокоды для корзины.</p>
+        </div>
+        <button class="btn btn-a" type="button" id="promoNew">+ Добавить баннер</button>
+      </div>
+      <div class="promoList" id="promoList"></div>
+      <div class="bar2">
+        <span class="grow muted" id="promoState"></span>
+        <button class="btn btn-a" type="button" id="promoSave">Сохранить акции</button>
+      </div>
+      <input id="promoFile" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+    </section>
+
+    <!-- ---------- настройки ---------- -->
+    <section class="pane" id="pane-cfg">
+      <div class="head">
+        <div>
+          <h2>Настройки</h2>
+          <p>Контакты и тексты, которые повторяются на всех страницах.</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Контакты</h3>
+        <p class="hint">Номер показывается в подвале; на него же уходит заказ из корзины.</p>
+        <div class="row">
+          <div class="field"><label for="c_phone">Телефон для показа</label>
+            <input id="c_phone" type="text" placeholder="+7 700 000 00 00"></div>
+          <div class="field"><label for="c_tel">Телефон для набора</label>
+            <input id="c_tel" type="text" placeholder="+77000000000">
+            <div class="tip">Только цифры и плюс.</div></div>
+          <div class="field"><label for="c_wa">WhatsApp для заказов</label>
+            <input id="c_wa" type="text" placeholder="если отличается от телефона"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label for="c_ig">Instagram</label>
+            <input id="c_ig" type="url" placeholder="https://instagram.com/..."></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3>Тексты на главной</h3>
+        <p class="hint">Заголовок героя разделите вертикальной чертой, чтобы получились две строки.</p>
+        <div class="field" style="margin-bottom:14px"><label for="c_line">Строка над заголовком</label>
+          <input id="c_line" type="text" placeholder="DORX · собственный бренд · Казахстан"></div>
+        <div class="field" style="margin-bottom:14px"><label for="c_title">Заголовок героя</label>
+          <input id="c_title" type="text" placeholder="BUILT|SHARP.">
+          <div class="tip">Например: BUILT|SHARP. — получится две строки, точка станет синей.</div></div>
+        <div class="field" style="margin-bottom:14px"><label for="c_sub">Подзаголовок героя</label>
+          <textarea id="c_sub" style="min-height:70px"></textarea></div>
+        <div class="field"><label for="c_man">Фраза-манифест</label>
+          <textarea id="c_man" style="min-height:70px"></textarea></div>
+      </div>
+
+      <div class="bar2">
+        <span class="grow muted" id="cfgState"></span>
+        <button class="btn btn-a" type="button" id="cfgSave">Сохранить настройки</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="msg"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = '/api/';
+  var products = [];
+  var promos = [];
+  var config = {};
+  var current = null;   /* редактируемый товар: null = новый */
+  var shots = [];       /* фотографии текущего товара */
+  var filter = '';
+
+  var CATS = { seating: 'Кресла и мебель', mirrors: 'Зеркала', workspace: 'Рабочее место',
+    appliances: 'Техника', bath: 'Ванная', home: 'Для дома' };
+
+  function $(id) { return document.getElementById(id); }
+  function all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  var msgTimer;
+  function say(text, kind) {
+    var m = $('msg');
+    m.textContent = text;
+    m.className = 'on' + (kind ? ' ' + kind : '');
+    clearTimeout(msgTimer);
+    msgTimer = setTimeout(function () { m.className = ''; }, 3200);
+  }
+
+  function api(path, options) {
+    return fetch(API + path, Object.assign({ credentials: 'same-origin' }, options || {}))
+      .then(function (r) {
+        return r.json().catch(function () { return {}; }).then(function (body) {
+          if (!r.ok) throw new Error(body.error || ('Ошибка ' + r.status));
+          return body;
+        });
+      });
+  }
+
+  /* ---------- вход ---------- */
+
+  function showApp() {
+    $('gate').style.display = 'none';
+    $('app').classList.add('on');
+    loadAll();
+  }
+
+  $('gateForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var btn = $('gateGo');
+    btn.disabled = true;
+    $('gateErr').textContent = '';
+    api('login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: $('pw').value })
+    }).then(showApp).catch(function (err) {
+      $('gateErr').textContent = err.message;
+      $('pw').value = '';
+      $('pw').focus();
+    }).finally(function () { btn.disabled = false; });
+  });
+
+  $('logout').addEventListener('click', function () {
+    api('logout', { method: 'POST' }).finally(function () { location.reload(); });
+  });
+
+  /* ---------- вкладки ---------- */
+
+  all('.tab').forEach(function (t) {
+    t.addEventListener('click', function () {
+      all('.tab').forEach(function (x) { x.classList.toggle('on', x === t); });
+      all('.pane').forEach(function (p) {
+        p.classList.toggle('on', p.id === 'pane-' + t.getAttribute('data-p'));
+      });
+    });
+  });
+
+  /* ---------- загрузка данных ---------- */
+
+  function loadAll() {
+    Promise.all([api('products'), api('config'), api('promos')]).then(function (res) {
+      products = Array.isArray(res[0]) ? res[0] : [];
+      config = res[1] && typeof res[1] === 'object' ? res[1] : {};
+      promos = Array.isArray(res[2]) ? res[2] : [];
+      paintList();
+      paintConfig();
+      paintPromos();
+      blank();
+    }).catch(function (err) { say(err.message, 'bad'); });
+  }
+
+  /* ---------- список товаров ---------- */
+
+  function paintList() {
+    var rows = products.filter(function (p) {
+      return !filter || String(p.name || '').toLowerCase().indexOf(filter) >= 0;
+    });
+    $('listCount').textContent = 'Товары (' + products.length + ')';
+    $('items').innerHTML = rows.length ? rows.map(function (p) {
+      var img = (p.images && p.images[0]) || '';
+      return '<button class="item' + (current && current.id === p.id ? ' on' : '') +
+        '" type="button" data-id="' + esc(p.id) + '">' +
+        (img ? '<img src="' + esc(img) + '" alt="">' : '<div class="ph0">✕</div>') +
+        '<div><div class="nm">' + esc(p.name) +
+          (p.demo ? '<span class="tag">пример</span>' : '') + '</div>' +
+        '<div class="mt">' + (Number(p.price) || 0).toLocaleString('ru-RU') + ' ₸ · ' +
+          esc(CATS[p.category] || '—') + '</div></div></button>';
+    }).join('') : '<div style="padding:26px 16px;color:var(--mute);font-size:13px">Ничего не найдено</div>';
+
+    all('.item', $('items')).forEach(function (b) {
+      b.addEventListener('click', function () { edit(b.getAttribute('data-id')); });
+    });
+  }
+
+  $('listQ').addEventListener('input', function () {
+    filter = this.value.trim().toLowerCase();
+    paintList();
+  });
+
+  /* ---------- форма товара ---------- */
+
+  function blank() {
+    current = null;
+    shots = [];
+    /* форма отдаёт свои поля как свойства, и поле с подходящим именем
+       перекрывает одноимённый метод — зовём метод напрямую */
+    HTMLFormElement.prototype.reset.call($('form'));
+    $('f_war').value = '12 месяцев';
+    $('specs').innerHTML = '';
+    specRow('', '');
+    paintShots();
+    $('formState').textContent = 'Новый товар';
+    $('del').hidden = true;
+    paintList();
+  }
+
+  function edit(id) {
+    var p = products.filter(function (x) { return x.id === id; })[0];
+    if (!p) return;
+    current = p;
+    shots = (p.images || []).slice();
+    $('f_name').value = p.name || '';
+    $('f_sub').value = p.sub || '';
+    $('f_cat').value = CATS[p.category] ? p.category : 'home';
+    $('f_war').value = p.warranty || '';
+    $('f_hit').checked = Boolean(p.hit);
+    $('f_new').checked = Boolean(p.isNew);
+    $('f_price').value = p.price || '';
+    /* если платёж в месяц был посчитан автоматически, поле оставляем пустым:
+       иначе после смены цены на карточке осталась бы старая сумма */
+    var autoInstalment = Math.round((p.price || 0) / 24);
+    $('f_inst').value = (p.priceInstallment && p.priceInstallment !== autoInstalment)
+      ? p.priceInstallment : '';
+    $('f_yt').value = p.youtubeUrl || '';
+    $('f_desc').value = p.description || '';
+    $('specs').innerHTML = '';
+    var keys = Object.keys(p.specs || {});
+    if (keys.length) keys.forEach(function (k) { specRow(k, p.specs[k]); });
+    else specRow('', '');
+    paintShots();
+    $('formState').textContent = 'Редактируется: ' + p.name;
+    $('del').hidden = false;
+    paintList();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  $('addNew').addEventListener('click', blank);
+  $('formReset').addEventListener('click', function () {
+    if (current) edit(current.id); else blank();
+  });
+
+  /* ---------- характеристики ---------- */
+
+  function specRow(k, v) {
+    var d = document.createElement('div');
+    d.className = 'spec';
+    d.innerHTML = '<input type="text" placeholder="Свойство" value="' + esc(k) + '">' +
+      '<input type="text" placeholder="Значение" value="' + esc(v) + '">' +
+      '<button type="button" aria-label="Убрать строку">✕</button>';
+    d.querySelector('button').addEventListener('click', function () { d.remove(); });
+    $('specs').appendChild(d);
+  }
+
+  $('specAdd').addEventListener('click', function () { specRow('', ''); });
+
+  function collectSpecs() {
+    var out = {};
+    all('.spec', $('specs')).forEach(function (row) {
+      var ins = row.querySelectorAll('input');
+      var k = ins[0].value.trim();
+      var v = ins[1].value.trim();
+      if (k && v) out[k] = v;
+    });
+    return out;
+  }
+
+  /* ---------- фотографии ---------- */
+
+  function paintShots() {
+    $('shots').innerHTML = shots.map(function (src, i) {
+      return '<div class="shot' + (i ? '' : ' lead') + '">' +
+        (i ? '' : '<span class="flag">Главная</span>') +
+        '<img src="' + esc(src) + '" alt="">' +
+        '<div class="tools">' +
+          (i ? '<button type="button" data-a="lead" data-i="' + i + '" title="Сделать главной">★</button>' : '') +
+          (i ? '<button type="button" data-a="left" data-i="' + i + '" title="Левее">←</button>' : '') +
+          (i < shots.length - 1 ? '<button type="button" data-a="right" data-i="' + i + '" title="Правее">→</button>' : '') +
+          '<button type="button" data-a="del" data-i="' + i + '" title="Убрать">✕</button>' +
+        '</div></div>';
+    }).join('');
+
+    all('.shot .tools button', $('shots')).forEach(function (b) {
+      b.addEventListener('click', function () {
+        var i = Number(b.getAttribute('data-i'));
+        var act = b.getAttribute('data-a');
+        if (act === 'del') shots.splice(i, 1);
+        else if (act === 'lead') shots.unshift(shots.splice(i, 1)[0]);
+        else if (act === 'left') shots.splice(i - 1, 0, shots.splice(i, 1)[0]);
+        else if (act === 'right') shots.splice(i + 1, 0, shots.splice(i, 1)[0]);
+        paintShots();
+      });
+    });
+  }
+
+  function sendFiles(files) {
+    var list = Array.prototype.slice.call(files || []);
+    if (!list.length) return;
+    var fd = new FormData();
+    list.forEach(function (f) { fd.append('files', f); });
+    say('Загружаю ' + list.length + '…');
+    api('upload', { method: 'POST', body: fd }).then(function (res) {
+      shots = shots.concat(res.urls || []);
+      paintShots();
+      say('Готово: ' + (res.urls || []).length + ' фото', 'ok');
+    }).catch(function (err) { say(err.message, 'bad'); });
+  }
+
+  $('pick').addEventListener('click', function () { $('file').click(); });
+  $('file').addEventListener('change', function () { sendFiles(this.files); this.value = ''; });
+
+  var drop = $('drop');
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('hot'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('hot'); });
+  });
+  drop.addEventListener('drop', function (e) { sendFiles(e.dataTransfer.files); });
+
+  $('imgAdd').addEventListener('click', function () {
+    var url = $('imgUrl').value.trim();
+    if (!url) return;
+    shots.push(url);
+    $('imgUrl').value = '';
+    paintShots();
+  });
+
+  /* ---------- сохранение товара ---------- */
+
+  function slugify(name) {
+    var map = { а:'a',б:'b',в:'v',г:'g',д:'d',е:'e',ё:'e',ж:'zh',з:'z',и:'i',й:'y',к:'k',л:'l',
+      м:'m',н:'n',о:'o',п:'p',р:'r',с:'s',т:'t',у:'u',ф:'f',х:'h',ц:'c',ч:'ch',ш:'sh',щ:'sch',
+      ы:'y',э:'e',ю:'yu',я:'ya',ъ:'',ь:'' };
+    var s = String(name).toLowerCase().split('').map(function (ch) {
+      return map[ch] !== undefined ? map[ch] : ch;
+    }).join('');
+    s = s.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+    return s || ('tovar-' + Date.now().toString(36));
+  }
+
+  function uniqueId(base, keepId) {
+    var id = base, n = 2;
+    while (products.some(function (p) { return p.id === id && p.id !== keepId; })) {
+      id = base + '-' + n;
+      n += 1;
+    }
+    return id;
+  }
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = $('f_name').value.trim();
+    if (!name) { say('Впишите название', 'bad'); $('f_name').focus(); return; }
+
+    var price = Math.max(0, parseInt($('f_price').value, 10) || 0);
+    var inst = parseInt($('f_inst').value, 10);
+    var item = {
+      id: current ? current.id : uniqueId(slugify(name)),
+      name: name,
+      sub: $('f_sub').value.trim(),
+      category: $('f_cat').value,
+      warranty: $('f_war').value.trim(),
+      hit: $('f_hit').checked,
+      isNew: $('f_new').checked,
+      price: price,
+      priceInstallment: inst > 0 ? inst : Math.round(price / 24),
+      youtubeUrl: $('f_yt').value.trim(),
+      description: $('f_desc').value.trim(),
+      images: shots.slice(),
+      specs: collectSpecs()
+    };
+    if (current && current.demo) item.demo = true;
+
+    var next = products.slice();
+    if (current) {
+      next = next.map(function (p) { return p.id === current.id ? item : p; });
+    } else {
+      next.push(item);
+    }
+
+    $('save').disabled = true;
+    api('save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(next)
+    }).then(function () {
+      products = next;
+      current = item;
+      paintList();
+      $('formState').textContent = 'Сохранено: ' + item.name;
+      $('del').hidden = false;
+      say('Товар на сайте', 'ok');
+    }).catch(function (err) { say(err.message, 'bad'); })
+      .finally(function () { $('save').disabled = false; });
+  });
+
+  $('del').addEventListener('click', function () {
+    if (!current) return;
+    if (!confirm('Удалить «' + current.name + '» с сайта?')) return;
+    var next = products.filter(function (p) { return p.id !== current.id; });
+    api('save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(next)
+    }).then(function () {
+      products = next;
+      blank();
+      say('Удалено', 'ok');
+    }).catch(function (err) { say(err.message, 'bad'); });
+  });
+
+  /* ---------- демо-товары ---------- */
+
+  $('demoAdd').addEventListener('click', function () {
+    api('seed-demo', { method: 'POST' }).then(function (r) {
+      say('Добавлено примеров: ' + r.added, 'ok');
+      loadAll();
+    }).catch(function (err) { say(err.message, 'bad'); });
+  });
+
+  $('demoDrop').addEventListener('click', function () {
+    if (!confirm('Убрать все демонстрационные товары?')) return;
+    api('drop-demo', { method: 'POST' }).then(function (r) {
+      say('Убрано: ' + r.removed, 'ok');
+      loadAll();
+    }).catch(function (err) { say(err.message, 'bad'); });
+  });
+
+  /* ---------- акции ---------- */
+
+  var promoTarget = -1;
+
+  function paintPromos() {
+    $('promoList').innerHTML = promos.map(function (x, i) {
+      return '<div class="promoCard" data-i="' + i + '">' +
+        (x.image ? '<img src="' + esc(x.image) + '" alt="">'
+                 : '<div style="aspect-ratio:16/9;background:var(--paper-2);display:grid;place-items:center;color:var(--mute);font-size:13px">нет картинки</div>') +
+        '<div class="pb">' +
+          '<input type="text" data-k="title" placeholder="Подпись" value="' + esc(x.title || '') + '">' +
+          '<input type="text" data-k="link" placeholder="Ссылка (необязательно)" value="' + esc(x.link || '') + '">' +
+          '<input type="text" data-k="code" placeholder="Промокод, например DORX10" value="' + esc(x.code || '') + '">' +
+          '<input type="number" data-k="percent" placeholder="Скидка, %" value="' + esc(x.percent || '') + '">' +
+          '<div style="display:flex;gap:8px">' +
+            '<button class="btn btn-b" type="button" data-a="img" style="flex:1">Картинка</button>' +
+            '<button class="btn btn-bad" type="button" data-a="del">Убрать</button>' +
+          '</div>' +
+        '</div></div>';
+    }).join('') || '<div class="muted">Пока ни одного баннера. Блок акций на сайте скрыт.</div>';
+
+    all('.promoCard', $('promoList')).forEach(function (card) {
+      var i = Number(card.getAttribute('data-i'));
+      all('input', card).forEach(function (inp) {
+        inp.addEventListener('input', function () {
+          var k = inp.getAttribute('data-k');
+          promos[i][k] = k === 'percent' ? (parseFloat(inp.value) || 0) : inp.value;
+        });
+      });
+      all('button', card).forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (b.getAttribute('data-a') === 'del') {
+            promos.splice(i, 1);
+            paintPromos();
+          } else {
+            promoTarget = i;
+            $('promoFile').click();
+          }
+        });
+      });
+    });
+  }
+
+  $('promoNew').addEventListener('click', function () {
+    promos.push({ image: '', title: '', link: '', code: '', percent: 0 });
+    paintPromos();
+  });
+
+  $('promoFile').addEventListener('change', function () {
+    if (!this.files || !this.files[0] || promoTarget < 0) return;
+    var fd = new FormData();
+    fd.append('files', this.files[0]);
+    this.value = '';
+    var i = promoTarget;
+    say('Загружаю…');
+    api('upload-promo', { method: 'POST', body: fd }).then(function (res) {
+      promos[i].image = res.url;
+      paintPromos();
+      say('Картинка загружена', 'ok');
+    }).catch(function (err) { say(err.message, 'bad'); });
+  });
+
+  $('promoSave').addEventListener('click', function () {
+    api('save-promos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(promos)
+    }).then(function () {
+      $('promoState').textContent = 'Сохранено';
+      say('Акции обновлены', 'ok');
+    }).catch(function (err) { say(err.message, 'bad'); });
+  });
+
+  /* ---------- настройки ---------- */
+
+  function paintConfig() {
+    $('c_phone').value = config.phone || '';
+    $('c_tel').value = config.phoneTel || '';
+    $('c_wa').value = config.whatsapp || '';
+    $('c_ig').value = config.instagram || '';
+    $('c_line').value = config.brandLine || '';
+    $('c_title').value = config.heroTitle || '';
+    $('c_sub').value = config.heroSub || '';
+    $('c_man').value = config.manifest || '';
+  }
+
+  $('cfgSave').addEventListener('click', function () {
+    var body = {
+      phone: $('c_phone').value,
+      phoneTel: $('c_tel').value,
+      whatsapp: $('c_wa').value,
+      instagram: $('c_ig').value,
+      brandLine: $('c_line').value,
+      heroTitle: $('c_title').value,
+      heroSub: $('c_sub').value,
+      manifest: $('c_man').value
+    };
+    api('save-config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      config = r.config || body;
+      $('cfgState').textContent = 'Сохранено';
+      say('Настройки обновлены', 'ok');
+    }).catch(function (err) { say(err.message, 'bad'); });
+  });
+
+  /* ---------- старт ---------- */
+
+  api('check').then(function (r) {
+    if (r.ok) showApp(); else $('pw').focus();
+  }).catch(function () { $('pw').focus(); });
+})();
+</script>
+</body>
+</html>

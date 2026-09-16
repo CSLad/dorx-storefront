@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DORX — мебель и техника для дома и офиса в Казахстане</title>
+<meta name="description" content="DORX — казахстанский бренд мебели и техники для дома и офиса. Кресла, зеркала, рабочее место, техника. Гарантия до 12 месяцев, доставка по всему Казахстану, рассрочка до 24 месяцев.">
+<link rel="canonical" href="/">
+<link rel="icon" href="/assets/dorx-icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/assets/dorx-icon.png">
+<meta name="theme-color" content="#15171C">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="DORX">
+<meta property="og:title" content="DORX — Built sharp">
+<meta property="og:description" content="Казахстанский бренд мебели и техники для дома и офиса. Гарантия, доставка по Казахстану, рассрочка до 24 месяцев.">
+<meta property="og:image" content="/assets/dorx-primary.png">
+<meta property="og:locale" content="ru_RU">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Rubik:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css?v=9">
+</head>
+<body>
+
+<header id="hdr"><div class="bar">
+  <a class="wm" href="/">
+    <svg viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="20" fill="#1E5EE0"></rect><g stroke="#fff"><g transform="translate(50,50) skewX(-10) translate(-50,-50)" stroke-width="11.4"><line x1="35.4" y1="35.4" x2="64.6" y2="64.6"></line><line x1="64.6" y1="35.4" x2="35.4" y2="64.6"></line></g></g></svg>
+    DORX
+  </a>
+  <nav>
+    <a href="/catalogue/">Каталог</a>
+    <a href="/warranty/">Гарантия</a>
+    <a href="#revs">Отзывы</a>
+  </nav>
+</div></header>
+
+<section class="hero">
+  <canvas id="nodes" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="eyebrow" id="kick">DORX · собственный бренд · Казахстан</div>
+    <h1 id="heroTitle"><i><span>BUILT</span></i><i><span>SHARP<em>.</em></span></i></h1>
+    <div class="gloss">Сделано точно</div>
+    <div class="claim">
+      <p id="hsub">Мебель и техника для дома и офиса под собственным брендом. Гарантия до 12 месяцев, доставка по всему Казахстану.</p>
+      <div class="cta">
+        <a class="btn btn-a" href="/catalogue/">Открыть каталог</a>
+        <a class="btn btn-ghost" href="#compare">Сравнить модели</a>
+      </div>
+    </div>
+  </div>
+  <div class="seal">
+    <svg viewBox="0 0 100 100" aria-hidden="true">
+      <defs><path id="sealArc" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"></path></defs>
+      <text><textPath href="#sealArc" startOffset="0">ГАРАНТИЯ 12 МЕСЯЦЕВ · ДОСТАВКА ПО КАЗАХСТАНУ · СВОЙ БРЕНД · </textPath></text>
+    </svg>
+    <div class="core"><svg viewBox="0 0 100 100" aria-hidden="true"><g transform="translate(50,50) skewX(-10) translate(-50,-50)" stroke="#fff" stroke-width="15" stroke-linecap="butt"><line x1="30" y1="30" x2="70" y2="70"></line><line x1="70" y1="30" x2="30" y2="70"></line></g></svg></div>
+  </div>
+</section>
+
+<div class="mq" aria-hidden="true"><div id="mqA"></div><div id="mqB"></div></div>
+
+<section class="manifest"><div class="wrap">
+  <p id="manifestText">Свой бренд значит: сами выбираем материалы, сами держим склад и сами отвечаем, если что-то пошло не так.</p>
+</div></section>
+
+<section id="cat"><div class="wrap">
+  <div class="eyebrow rv">Каталог по категориям</div>
+  <h2 class="secH rv">Шесть направлений</h2>
+  <div class="catWrap" id="catWrap"></div>
+  <div style="padding:26px 0 0"><a class="btn btn-b" href="/catalogue/">Открыть весь каталог</a></div>
+</div></section>
+
+<section id="promos" hidden><div class="wrap">
+  <div class="promoTop">
+    <div>
+      <div class="eyebrow rv">Акции и поступления</div>
+      <h2 class="secH rv">Что сейчас выгодно</h2>
+    </div>
+    <div class="promoNav rv">
+      <button type="button" data-d="-1" aria-label="Назад">&#8592;</button>
+      <button type="button" data-d="1" aria-label="Вперёд">&#8594;</button>
+    </div>
+  </div>
+  <div class="promoRail" id="promoRail"></div>
+</div></section>
+
+<section id="compare"><div class="wrap">
+  <div class="eyebrow rv">Сравнение</div>
+  <h2 class="secH rv">Чем одна модель отличается от другой</h2>
+  <p class="secP rv">Выберите две позиции одной категории — характеристики встанут рядом,
+    а расхождения подсветятся.</p>
+  <div class="cmpWrap rv" id="cmpWrap"></div>
+</div></section>
+
+<section class="nums">
+  <div><div class="v" id="countProducts" data-to="0">0</div><div class="k">позиций в каталоге</div></div>
+  <div><div class="v" data-to="12">0</div><div class="k">месяцев гарантии</div></div>
+  <div><div class="v" data-to="24">0</div><div class="k">месяцев рассрочки</div></div>
+  <div><div class="v" data-to="17">0</div><div class="k">городов доставки</div></div>
+</section>
+
+<section id="trust"><div class="wrap"><div class="trust">
+  <div class="rv"><h3>Официальная гарантия</h3><p>До 12 месяцев на каждый товар. Обслуживаем сами, без лишней переписки.</p></div>
+  <div class="rv"><h3>Доставка по Казахстану</h3><p>Отправляем в любой город — быстро и с отслеживанием.</p></div>
+  <div class="rv"><h3>Рассрочка до 24 месяцев</h3><p>Делим стоимость на месяцы. Сумму платежа показываем прямо в карточке товара.</p></div>
+</div></div></section>
+
+<section id="revs"><div class="wrap">
+  <div class="eyebrow rv">Что важно покупателю</div>
+  <h2 class="secH rv" style="margin-bottom:26px">Три обещания</h2>
+  <div class="revs">
+    <div class="rev rv"><div class="st">✕ ✕ ✕</div><p>Каждая позиция — наш собственный бренд. Мы знаем, из чего она сделана, потому что сами выбирали материалы и поставщика.</p><div class="who"><div class="av">01</div><div><b>Свой бренд</b><span>не перепродажа</span></div></div></div>
+    <div class="rev rv"><div class="st">✕ ✕ ✕</div><p>Гарантия — не строчка в описании. Если товар сломался в течение срока, вопрос решаем мы, а не производитель где-то далеко.</p><div class="who"><div class="av">02</div><div><b>Сами обслуживаем</b><span>гарантия до 12 месяцев</span></div></div></div>
+    <div class="rev rv"><div class="st">✕ ✕ ✕</div><p>Цена на сайте — окончательная. Никаких «уточните наличие» и разницы между витриной и корзиной.</p><div class="who"><div class="av">03</div><div><b>Честная цена</b><span>одна везде</span></div></div></div>
+  </div>
+</div></section>
+
+<section id="scale"><div class="wrap">
+  <div class="eyebrow rv">Размер в масштабе</div>
+  <h2 class="secH rv">Впишется ли</h2>
+  <p class="secP rv">Габариты из карточки, нарисованные рядом с человеком ростом 170 см.
+    Один масштаб на обоих — видно, что покупаете.</p>
+  <div class="scaleWrap rv" id="scaleWrap"></div>
+</div></section>
+
+<section class="end"><div class="wrap">
+  <h2>Обустрой дом<br>целиком</h2>
+  <p>Гарантия до 12 месяцев · доставка по всему Казахстану · рассрочка до 24 месяцев</p>
+  <div style="margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a class="btn btn-ghost" href="/catalogue/">Открыть каталог</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap">
+  <span>© <span id="yr"></span> DORX · Республика Казахстан</span>
+  <span><a href="#" data-phone>+7 700 000 00 00</a> · <a href="/warranty/">Гарантия</a> · <a href="/terms/">Условия</a> · <a href="/privacy/">Конфиденциальность</a></span>
+</div></footer>
+
+<div id="dim"></div>
+<button id="closeSheet" aria-label="Закрыть">&times;</button>
+<div id="sheet" role="dialog" aria-modal="true" aria-label="Карточка товара"></div>
+
+<script src="/assets/app.js?v=9" defer></script>
+</body>
+</html>

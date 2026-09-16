@@ -1,0 +1,15 @@
+node_modules/
+data/
+*.log
+
+# секреты: в открытом репозитории случайный коммит сразу публичен
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+**/password.txt
+credentials*.json
+service-account*.json
+.claude/settings.local.json

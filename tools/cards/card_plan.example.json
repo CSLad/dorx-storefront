@@ -1,0 +1,30 @@
+[
+  {
+    "id": "dorx-coremesh-chernyy",
+    "photo": "coremesh-black.png",
+    "headline": "Спина скажет спасибо",
+    "chips": ["СЕТКА", "ДО 140 КГ", "НАКЛОН 135°"],
+    "dims": {}
+  },
+  {
+    "id": "dorx-veltrix-chernyy",
+    "photo": "veltrix.png",
+    "headline": "Механика Kailh Red",
+    "chips": ["35×14×4,5 СМ", "USB TYPE-C", "ПОДСВЕТКА"],
+    "dims": { "width": "35 см" }
+  },
+  {
+    "id": "dorx-veltrix-belyy",
+    "photo": "veltrix-white.png",
+    "headline": "Механика Kailh Red",
+    "chips": ["35×14×4,5 СМ", "USB TYPE-C", "ПОДСВЕТКА"],
+    "dims": { "width": "35 см" }
+  },
+  {
+    "id": "dorx-kushetka",
+    "photo": "kushetka.png",
+    "headline": "Держит до 250 кг",
+    "chips": ["180×70×60 СМ", "ЭКОКОЖА", "СТАЛЬНОЙ КАРКАС"],
+    "dims": { "width": "180 см", "height": "60 см" }
+  }
+]

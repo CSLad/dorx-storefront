@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "dorx-site": {
+      "command": "node",
+      "args": ["mcp/server.js"],
+      "env": {
+        "DORX_SITE_URL": "https://dorx.kz"
+      }
+    }
+  }
+}
